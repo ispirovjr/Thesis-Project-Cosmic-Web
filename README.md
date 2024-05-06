@@ -9,7 +9,7 @@ Within cosmology the most used method for distance determination is redshift mea
 
 
 ## Solution and Project
-The goal of this project is to develop a machine learning algorythm that can reliably correct redshift distortions. To that end I will use the Illustris-3 Dark simulation for cosmological data. I distort the data using the innate velocity redshift as shown in early tasks and study the resultant structures of the cosmic web. To that end I will alsso develop density maps via DTFE (see below). 
+The goal of this project is to develop a machine learning algorythm that can reliably correct redshift distortions. To that end I will use the Illustris-3 Dark simulation for cosmological data. I distort the data using the innate velocity redshift as shown in early tasks and study the resultant structures of the cosmic web. To that end I will alsso develop density maps via [DTFE](https://github.com/jfeldbrugge/DTFE?tab=readme-ov-file). 
 
 Moving further, I will use pytorch to teach a neural network how to reconstruct the true matter distribution from a flawed obervation.
 
