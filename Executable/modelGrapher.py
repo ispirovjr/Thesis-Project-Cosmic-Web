@@ -1,23 +1,13 @@
-import numpy as np
 from matplotlib import pyplot as plt
 
 import torch
-from torch.utils.data import Dataset
-from torchvision import datasets
-from torchvision.transforms import ToTensor
-from torch.utils.data import DataLoader
-from torch import nn
 
-import vaex
-import os
+from NeuralNets import CustomVaexDataset, StraightNetwork, BottleneckNetwork
+from ModelMaker import snapshotPath
 
 from cycler import cycler
 
-
-
-
-
-plt.plot([1],[1])
+from DataCore import L
 
 font = {"weight": "normal", "size": 14}
 plt.rcParams["axes.linewidth"] = 1.5  # set the value globally
@@ -27,119 +17,21 @@ plt.rcParams["figure.facecolor"] = "white"
 _legend = {"frameon": True, "framealpha":0.7}
 plt.rc("legend", **_legend)
 plt.rcParams["axes.prop_cycle"] = cycler("color",('indigo','b','r','k','#ff7f0e','g'))
-plt.show()
 
 
-
-path = "/Users/users/spirov/Blk/Nexus Project/Thesis-Project-Cosmic-Web/"
-p3 = "/Users/users/spirov/Blk/Nexus Project/Thesis-Project-Cosmic-Web/Data/Testing/"
-
-
-
-visible = 3.5e4
-
-lim = 5
-sc = 1e4
-
-empty=0
-
-class CustomVaexDataset(Dataset):
-    def __init__(self,frameDir):
-        self.lengt = len(os.listdir(frameDir))
-        self.frameDir = frameDir
-    
-    def __len__(self):
-        return self.lengt
-        
-        
-    def __getitem__(self,idx):
-        fil = self.frameDir+os.listdir(self.frameDir)[idx]
-        df = vaex.open(fil)
-        
-        th = df.Th.values[::lim]
-        fi = df.Fi.values[::lim]
-        R = df.R.values[::lim]/sc
-        CZ = df.CZ.values[::lim]/sc
-        
-        #filt = R<visible/sc
-        
-        CZ = np.where(R<visible/sc,CZ,empty)
-        th= np.where(R<visible/sc,th,empty) 
-        fi = np.where(R<visible/sc,fi,empty)  
-        R = np.where(R<visible/sc,R,empty) 
-      
-        
-        broken = np.array((CZ,th,fi))
-        truth = np.array(R)
-        
-        
-        return torch.tensor(broken), torch.tensor(truth)
-                 
-test_set = CustomVaexDataset(p3)
-test_dataloader = DataLoader(test_set, batch_size=16, shuffle=True)
-test_features, test_labels = next(iter(test_dataloader))
-
-
-n = int((2**12))
-l=int(111992/lim)+1
-
-class BottleneckNetwork(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.flatten = nn.Flatten()
-        self.linear_relu_stack = nn.Sequential(
-            nn.Linear(3 * l, n*8),
-            nn.ReLU(),
-            nn.Linear(8*n,n*2),
-            nn.Sigmoid(),
-            nn.Linear(2*n,n),
-            nn.ReLU(),
-            nn.Linear(n,n),
-            nn.Sigmoid(),
-            nn.Linear(n,n*2),
-            nn.ReLU(),
-            nn.Linear(2*n,l)
-        )
-
-    def forward(self, x):
-        x = self.flatten(x)
-        logits = self.linear_relu_stack(x)
-        return logits
-
-class StraightNetwork(nn.Module):
-    def __init__(self):
-        super().__init__()
-        self.flatten = nn.Flatten()
-        self.linear_relu_stack = nn.Sequential(
-            nn.Linear(3 * l, n*4),
-            nn.ReLU(),
-            nn.Linear(4*n,n*4),
-            nn.Sigmoid(),
-            nn.Linear(4*n,4*n),
-            nn.ReLU(),
-            nn.Linear(n*4,4*n),
-            nn.Sigmoid(),
-            nn.Linear(n*4,n*4),
-            nn.ReLU(),
-            nn.Linear(4*n,l)
-        )
-
-    def forward(self, x):
-        x = self.flatten(x)
-        logits = self.linear_relu_stack(x)
-        return logits
-
-    
-
-torch.set_default_dtype(torch.float64)
-
+# Get the model we made
 model =StraightNetwork() #BottleneckNetwork() # StraightNetwork() #
-
-path ="/Users/users/spirov/ThesisProject/modelSnapshot.pt"
-model.load_state_dict(torch.load(path)) 
+model.load_state_dict(torch.load(snapshotPath))
 
 
-train_features, train_labels = next(iter(test_dataloader))
+
+# Load a random dataset
+
+dataPath = "/Users/users/spirov/Blk/Nexus Project/Thesis-Project-Cosmic-Web/Data/Testing/"
+
+dataset = CustomVaexDataset(dataPath)
+
+train_features, train_labels = dataset.__getitem__()
 img = train_features[0].squeeze()
 label = train_labels[0]
 
@@ -147,22 +39,25 @@ with torch.no_grad():
     mod = model(train_features)[0]
     
 
+# Plot Data
 
-fig = plt.figure(figsize=(30,10))
+plotscale = 1
+
+fig = plt.figure(figsize=(10,5))
 plt.subplot(131,projection="polar")
-plt.scatter(img[2],img[0],s=0.1*lim,alpha=0.7)
-#plt.ylim(0,4e4)
+plt.scatter(img[2],img[0],s=0.1*plotscale,alpha=0.7)
+plt.ylim(0,L/2)
 plt.title("Broken")
 
 plt.subplot(132,projection="polar")
-plt.scatter(img[2],mod,s=0.1*lim,alpha=0.7)
+plt.scatter(img[2],mod,s=0.1*plotscale,alpha=0.7)
 plt.title("Model")
+plt.ylim(min(mod),L/2)
 
 plt.subplot(133,projection="polar")
-plt.scatter(img[2],label,s=0.1*lim,alpha=0.7)
-#plt.ylim(0,4e4)
+plt.scatter(img[2],label,s=0.1*plotscale,alpha=0.7)
 plt.title("Correct")
+plt.ylim(0,L/2)
 
 plt.suptitle("Data loaded from set")
-
-fig.savefig('./Figures/Predicted Model.png', dpi=fig.dpi)
+fig.savefig('./Model Figures/Predicted Model.png', dpi=fig.dpi)
