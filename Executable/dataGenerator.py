@@ -5,8 +5,8 @@ import time
 from DataCore import localizeDataFrame
 
 
-Training = True
-n = 512
+Training = False
+n = 256
 
 path = "/net/virgo01/data/users/spirov/Nexus Project/"
 subhalos = il.groupcat.load(path,135)['subhalos']
@@ -38,4 +38,4 @@ for i in range(n):
 
     rdf = localizeDataFrame(df, x,y,z)
     t = str(time.time())
-    rdf.export_hdf5(path+t+len(rdf)+".hdf5")
+    rdf.export_hdf5(path+t+".hdf5")

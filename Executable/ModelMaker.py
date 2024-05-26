@@ -4,7 +4,7 @@ from torch import nn
 from NeuralNets import CustomVaexDataset, printNodes, sc, StraightNetwork
 from matplotlib import pyplot as plt
 
-
+from DataCore import snapshotPath
 
 def train_loop(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
@@ -26,7 +26,6 @@ def train_loop(dataloader, model, loss_fn, optimizer):
             print(f"loss: [{current:>5d}/{size:>5d}]  {loss:>7f}")
 
 
-snapshotPath ="/Users/users/spirov/ThesisProject/modelSnapshot.pt"
 
 
 Ls = []
@@ -117,12 +116,11 @@ model = StraightNetwork()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate) 
 
 
-
 for t in range(epochs):
 #    if t == 10:
 #       optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate*10)
    
-    if t%5==0 and t>0:
+    if t%15==0 and t>0:
         snapshot(t)
     
     print(f"Epoch {t+1}\n-------------------------------")
