@@ -10,3 +10,5 @@
 - ~gpu talk~
 - bother Ruxandra
 - ONLY PLOT RA VS COSDEC
+- Get writing
+
