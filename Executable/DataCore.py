@@ -3,12 +3,11 @@ import numpy as np
 
 
 L = 75000
-DataSizeLimit = 37000
+DataSizeLimit = 111992#37000
 
 
 @vaex.register_function()
 def correct(x):
-
     return np.where(np.abs(x) > L / 2, x - np.sign(x) * L, x)
 
 
@@ -16,7 +15,6 @@ def localizeDataFrame(absDf, x, y, z):
     rx = absDf.X - x
     ry = absDf.Y - y
     rz = absDf.Z - z
-
 
     relx = rx.correct()
     rely = ry.correct()
@@ -35,9 +33,13 @@ def localizeDataFrame(absDf, x, y, z):
     relDf["Th"] = theta
     relDf["Fi"] = fi
 
-    relDf["CZ"] = relR + Vaway * 10
+    CZ = relR + Vaway * 10
 
-    relDf = relDf[relR<L/2]
+    cz = CZ.correct()
+
+    relDf["CZ"] = cz
+
+    #relDf = relDf[relR<L/2]
 
     return relDf.drop("X").drop("Y").drop("Z").drop("Vx").drop("Vy").drop("Vz")[:DataSizeLimit]
 
