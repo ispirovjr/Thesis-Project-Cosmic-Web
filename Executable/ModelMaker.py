@@ -1,10 +1,18 @@
 import torch
 from torch.utils.data import DataLoader
 from torch import nn
-from NeuralNets import CustomVaexDataset, printNodes, sc, StraightNetwork
+from NeuralNets import CustomVaexDataset, printNodes, sc, StraightNetwork, Unet, Stefann
 from matplotlib import pyplot as plt
 
 from DataCore import snapshotPath
+
+
+
+learning_rate = 1e-2 #sc/1e5
+batch_size = 64
+epochs = 1000
+bmark = 1e3/sc
+
 
 def train_loop(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
@@ -99,10 +107,6 @@ print("----------------------")
 printNodes()
 
 
-learning_rate = 1e-1 #sc/1e5
-batch_size = 16
-epochs = 1000
-bmark = 1e3/sc
 train_dataloader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
 test_dataloader = DataLoader(test_set, batch_size=batch_size, shuffle=True)
 
@@ -110,22 +114,29 @@ test_dataloader = DataLoader(test_set, batch_size=batch_size, shuffle=True)
 #-------------------------------------------
 
 loss_fn = nn.MSELoss() 
+#loss_fn = Stefann(10)  #HuberLoss, custom
+
 
 model = StraightNetwork()
 
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate) 
 
+#scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
+#scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[2,5,10], gamma=1e-2)
 
 for t in range(epochs):
-#    if t == 10:
-#       optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate*10)
-   
+
     if t%15==0 and t>0:
         snapshot(t)
     
     print(f"Epoch {t+1}\n-------------------------------")
     train_loop(train_dataloader, model, loss_fn, optimizer)
     test_loop(test_dataloader, model, loss_fn)
+
+#    if Ls[-1]<1:
+#        scheduler.step()
+
+
 print("Done!")
 
 snapshot()

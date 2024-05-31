@@ -11,7 +11,7 @@ n = 256
 n = int(input("Number of Datafiles: "))
 
 try:
-    Training = bool(int("Training (1), Testing(-1)"))
+    Training = bool(int(input("Training (1), Testing(0): ")))
 except:
     Training = True
 
