@@ -1,6 +1,7 @@
 import vaex
 import numpy as np
 
+snapshotPath ="/Users/users/spirov/ThesisProject/Snapshots/modelSnapshot.pt"
 
 L = 75000
 DataSizeLimit = 111992#37000

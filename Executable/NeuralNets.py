@@ -6,12 +6,14 @@ import vaex
 import os
 import numpy as np
 
-from DataCore import DataSizeLimit as l
+from DataCore import DataSizeLimit
 
-lim = 1   #datapoint reduction factor
+lim = 4  #datapoint reduction factor
 sc = 1e4   #scaling factor to allow model to behave itself
 
-n = int((2**np.log2(l)))
+l = int(DataSizeLimit/lim)
+
+n = int((2**np.log2(l))/(2*lim))
 
 class StraightNetwork(nn.Module):
     def __init__(self):
