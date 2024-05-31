@@ -8,6 +8,13 @@ from DataCore import localizeDataFrame
 Training = False
 n = 256
 
+n = int(input("Number of Datafiles: "))
+
+try:
+    Training = bool(int("Training (1), Testing(-1)"))
+except:
+    Training = True
+
 path = "/net/virgo01/data/users/spirov/Nexus Project/"
 subhalos = il.groupcat.load(path,135)['subhalos']
 
