@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 
 import torch
 
-from NeuralNets import CustomVaexDataset, StraightNetwork, BottleneckNetwork, sc
+from NeuralNets import CustomVaexDataset, StraightNetwork, Unet, sc
 
 from cycler import cycler
 
@@ -21,6 +21,9 @@ plt.rcParams["axes.prop_cycle"] = cycler("color",('indigo','b','r','k','#ff7f0e'
 torch.set_default_dtype(torch.float64)
 # Get the model we made
 model =StraightNetwork() #BottleneckNetwork() # StraightNetwork() #
+
+GoodPath = "/Users/users/spirov/ThesisProject/Snapshots/NewGoodSnap.pt"
+
 model.load_state_dict(torch.load(snapshotPath))
 
 
@@ -48,18 +51,18 @@ ran /= sc
 fig = plt.figure(figsize=(10,5))
 plt.subplot(131,projection="polar")
 plt.scatter(img[2],img[0],s=0.1*plotscale,alpha=0.7)
-plt.ylim(0,ran)
+#plt.ylim(0,ran)
 plt.title("Broken")
 
 plt.subplot(132,projection="polar")
 plt.scatter(img[2],mod,s=0.1*plotscale,alpha=0.7)
 plt.title("Model")
-plt.ylim(min([mod.min(),0]),ran)
+#plt.ylim(min([mod.min(),0]),ran)
 
 plt.subplot(133,projection="polar")
 plt.scatter(img[2],label,s=0.1*plotscale,alpha=0.7)
 plt.title("Correct")
-plt.ylim(0,ran)
+#plt.ylim(0,ran)
 
 plt.suptitle("Data loaded from set")
 fig.savefig('./Model Figures/Predicted Model.png', dpi=fig.dpi)

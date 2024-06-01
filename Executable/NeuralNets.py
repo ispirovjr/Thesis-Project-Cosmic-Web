@@ -9,12 +9,12 @@ from torch.nn.modules.loss import _Loss
 
 from DataCore import DataSizeLimit
 
-lim = 4  #datapoint reduction factor
+lim = 10  #datapoint reduction factor
 sc = 3e4   #scaling factor to allow model to behave itself
 
-l = int(DataSizeLimit/lim)
+l = int(DataSizeLimit/lim)+1
 
-n = int((2**int(np.log2(l))))
+n = int(2**int(np.log2(l)))
 
 class StraightNetwork(nn.Module):
     def __init__(self):
@@ -51,13 +51,13 @@ class Unet(nn.Module):
         super().__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(3 * l, n*8),
+            nn.Linear(3 * l, n*2),
             nn.ReLU(),
-            nn.Linear(8*n,n*2),
-            nn.Sigmoid(),
             nn.Linear(2*n,n),
+            nn.Sigmoid(),
+            nn.Linear(n,int(n/2)),
             nn.ReLU(),
-            nn.Linear(n,n),
+            nn.Linear(int(n/2),n),
             nn.Sigmoid(),
             nn.Linear(n,n*2),
             nn.ReLU(),
@@ -116,5 +116,5 @@ class CustomVaexDataset(Dataset):
 
 def printNodes():
     print("----------------")
-    print(f"{3 * l} -> {4 * n} -> {l}")
+    print(f"{3 * l} -> { n} -> {l}")
     print("----------------")
