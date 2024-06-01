@@ -36,7 +36,7 @@ def localizeDataFrame(absDf, x, y, z):
 
     CZ = relR + Vaway * 10
 
-    cz = CZ.correct()
+    cz = CZ#.correct()
 
     relDf["CZ"] = cz
 

@@ -1,10 +1,18 @@
 import torch
 from torch.utils.data import DataLoader
 from torch import nn
-from NeuralNets import CustomVaexDataset, printNodes, sc, StraightNetwork
+from NeuralNets import CustomVaexDataset, printNodes, sc, StraightNetwork, Unet, Stefann
 from matplotlib import pyplot as plt
 
 from DataCore import snapshotPath
+
+
+
+learning_rate = sc/1e5
+batch_size = 16
+epochs = 1000
+bmark = 1e3/sc
+
 
 def train_loop(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
@@ -13,7 +21,7 @@ def train_loop(dataloader, model, loss_fn, optimizer):
     model.train()
     for batch, (X, y) in enumerate(dataloader):
         # Compute prediction and loss
-        pred = model(X)
+        pred = model(X)[0]
         loss = loss_fn(pred, y)
 
         # Backpropagation
@@ -21,7 +29,7 @@ def train_loop(dataloader, model, loss_fn, optimizer):
         optimizer.step()
         optimizer.zero_grad()
 
-        if batch % 6 == 0:
+        if batch % 4 == 0:
             loss, current = loss.item(), batch * batch_size + len(X)
             print(f"loss: [{current:>5d}/{size:>5d}]  {loss:>7f}")
 
@@ -39,6 +47,7 @@ def snapshot(name=""):
     torch.save(model.state_dict(), snapshotPath)
     fig= plt.figure(figsize=(10,5))
     plt.subplot(121)
+    plt.yscale('log')
     plt.plot(Ls, marker="+")
     plt.title("Loss")
     plt.subplot(122)
@@ -60,9 +69,9 @@ def test_loop(dataloader, model, loss_fn):
     # also serves to reduce unnecessary gradient computations and memory usage for tensors with requires_grad=True
     with torch.no_grad():
         for X, y in dataloader:
-            pred = model(X)
+            pred = model(X)[0]
             test_loss += loss_fn(pred, y).item()
-            correct += ((pred.argmax(0) - y).abs() < bmark).type(torch.float).sum().item()
+            correct += ((pred - y).abs() < bmark).type(torch.float).sum().item()
 
     test_loss /= num_batches
 
@@ -99,33 +108,36 @@ print("----------------------")
 printNodes()
 
 
-learning_rate = 1e-1 #sc/1e5
-batch_size = 16
-epochs = 1000
-bmark = 1e3/sc
 train_dataloader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
 test_dataloader = DataLoader(test_set, batch_size=batch_size, shuffle=True)
 
 
 #-------------------------------------------
 
-loss_fn = nn.MSELoss() 
+#loss_fn = nn.MSELoss() 
+loss_fn = Stefann()  #HuberLoss, custom
+
 
 model = StraightNetwork()
 
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate) 
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate) 
 
+#scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=0.99)
+#scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[2,5,10], gamma=1e-2)
 
 for t in range(epochs):
-#    if t == 10:
-#       optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate*10)
-   
-    if t%15==0 and t>0:
+
+    if t%25==0 and t>0:
         snapshot(t)
     
     print(f"Epoch {t+1}\n-------------------------------")
     train_loop(train_dataloader, model, loss_fn, optimizer)
     test_loop(test_dataloader, model, loss_fn)
+
+#    if Ls[-1]<1:
+#        scheduler.step()
+
+
 print("Done!")
 
 snapshot()
