@@ -20,11 +20,11 @@ plt.rcParams["axes.prop_cycle"] = cycler("color",('indigo','b','r','k','#ff7f0e'
 
 torch.set_default_dtype(torch.float64)
 # Get the model we made
-model =StraightNetwork() #BottleneckNetwork() # StraightNetwork() #
+model =Unet() #BottleneckNetwork() # StraightNetwork() #
 
 GoodPath = "/Users/users/spirov/ThesisProject/Snapshots/NewGoodSnap.pt"
 
-model.load_state_dict(torch.load(snapshotPath))
+model.load_state_dict(torch.load(snapshotPath,map_location=torch.device('cpu')))
 
 
 
@@ -52,16 +52,16 @@ fig = plt.figure(figsize=(10,5))
 plt.subplot(131,projection="polar")
 plt.scatter(img[2],img[0],s=0.1*plotscale,alpha=0.7)
 #plt.ylim(0,ran)
-plt.title("Broken")
+plt.title("Distorted")
 
 plt.subplot(132,projection="polar")
 plt.scatter(img[2],mod,s=0.1*plotscale,alpha=0.7)
-plt.title("Model")
+plt.title("AI Model")
 #plt.ylim(min([mod.min(),0]),ran)
 
 plt.subplot(133,projection="polar")
 plt.scatter(img[2],label,s=0.1*plotscale,alpha=0.7)
-plt.title("Correct")
+plt.title("Physical")
 #plt.ylim(0,ran)
 
 plt.suptitle("Data loaded from set")

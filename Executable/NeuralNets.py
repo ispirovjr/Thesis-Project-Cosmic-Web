@@ -9,10 +9,10 @@ from torch.nn.modules.loss import _Loss
 
 from DataCore import DataSizeLimit
 
-lim = 10  #datapoint reduction factor
-sc = 3e4   #scaling factor to allow model to behave itself
+lim = 8  #datapoint reduction factor
+sc = 3.75e4   #scaling factor to allow model to behave itself
 
-l = int(DataSizeLimit/lim)+1
+l = int(DataSizeLimit/lim)
 
 n = int(2**int(np.log2(l)))
 
@@ -29,8 +29,8 @@ class StraightNetwork(nn.Module):
             nn.Linear(n,n),
             nn.ReLU(),
             nn.Linear(n,n),
-            nn.Dropout(0.35),
             nn.ReLU(),
+            nn.Dropout(0.35),
             nn.Linear(n,n),
             nn.ReLU(),
             nn.Linear(n,l),
@@ -45,23 +45,25 @@ class StraightNetwork(nn.Module):
 
 
 
-
+f = 16
 class Unet(nn.Module):
     def __init__(self):
         super().__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(3 * l, n*2),
+            nn.Linear(3 * l, int(n/(2*f))),
             nn.ReLU(),
-            nn.Linear(2*n,n),
+            #nn.Dropout(0.35),
+            nn.Linear(int(n/(2*f)),int(n/(4*f))),
             nn.Sigmoid(),
-            nn.Linear(n,int(n/2)),
+            nn.Linear(int(n/(4*f)),int(n/(8*f))),
             nn.ReLU(),
-            nn.Linear(int(n/2),n),
-            nn.Sigmoid(),
-            nn.Linear(n,n*2),
+            nn.Linear(int(n/(8*f)),int(n/(2*f))),
             nn.ReLU(),
-            nn.Linear(2*n,l)
+            #nn.Dropout(0.35),
+            nn.Linear(int(n/(2*f)),int(n/f)),
+            nn.ReLU(),
+            nn.Linear(int(n/f),l)
         )
 
     def forward(self, x):
