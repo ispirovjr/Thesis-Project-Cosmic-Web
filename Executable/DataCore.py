@@ -5,7 +5,7 @@ snapshotPath ="/Users/users/spirov/ThesisProject/Snapshots/modelSnapshot.pt"
 
 L = 75000
 DataSizeLimit = 111992#37000
-
+h = 0.704
 
 @vaex.register_function()
 def correct(x):
@@ -30,11 +30,13 @@ def localizeDataFrame(absDf, x, y, z):
 
     Vaway = (relx * absDf.Vx + rely * absDf.Vy + relz * absDf.Vz) / relR
 
+    relR *=h
+    
     relDf["R"] = relR
     relDf["Th"] = theta
     relDf["Fi"] = fi
 
-    CZ = relR + Vaway * 10
+    CZ = relR + Vaway * 10/h
 
     cz = CZ#.correct()
 
