@@ -16,3 +16,7 @@ Moving further, I will use pytorch to teach a neural network how to reconstruct 
 
 
 DTFE code taken from https://github.com/jfeldbrugge/DTFE?tab=readme-ov-file
+
+
+
+![Test Gif](Executable/Model Figures/Gifs/CalmerAdam.gif)
