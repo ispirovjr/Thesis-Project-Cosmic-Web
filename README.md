@@ -19,4 +19,4 @@ DTFE code taken from https://github.com/jfeldbrugge/DTFE?tab=readme-ov-file
 
 
 
-![Test Gif](Executable/Model&#32;Figures/Gifs/AdamCalmer.gif)
+![Test Gif](Executable/Model&#32;Figures/Gifs/CalmerAdam.gif)
