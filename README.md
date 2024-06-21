@@ -153,5 +153,13 @@ Finally, using a scheduler, the learning rate was slowly lowered, meaning Adam's
 
 
 
+## Repository Organization:
+
+The repository is poorly organized with some attempts at sorting items. The following items of interest should be noted:
+   - jupyter notebooks - the notebooks were made and used for the purposes of understanding the problem and producing graphs for the thesis. They are poorly documented, but include interesting results.
+   - snapshot folder - unfortunately the final model snapshot could not be saved here. Scripts and notebooks that generate snapshots will access it. The final snapshot can be downloaded from the google drive link, found in a text document in the folder.
+   - Executables - the primary useful part for reproducing my results. These scripts are the essential part towards creating and training a network. Data needs to be generated with the dataGenerator.py for training and testing. In order to run that, the illustris package must be installed and a relevant simulation downloaded. After that ModelMaker.py should be able to generate a new model. 
+
+
 
 
