@@ -103,5 +103,54 @@ Firstly, the typical patterns of learning are shown. The AI begins by randomly f
 ![StefDirect](Executable/Model&#32;Figures/Gifs/LSES.gif)
 
 
+### Adam and Best Fit Sphere
+
+To show the scale of the issue that the best fit sphere presents and to show why Adam can not be used from the start, see how it oscilates, but remains stuck. 
+![Adam](Executable/Model&#32;Figures/Gifs/Adam.gif)
+
+### Dropout Layers
+
+As mentioned in the thesis, dropout layers were not used. They slow down learning and introduce a jerky behavior. Since overfitting is not a concern, we don't use them. The first gif shows a case where a network with a more generous architecture was used: 3N -> n -> ... -> N. That is why the network still learns quickly. The second shows an implementation of the bottleneck, making the whole process more difficult.
+
+![Drop](Executable/Model&#32;Figures/Gifs/StefStraightDropSpikes.gif)
+![Drop](Executable/Model&#32;Figures/Gifs/StefUDrop.gif)
+
+
+### Removing Sigmoid
+
+One successful experiment was substituting the second Sigmoid layer with a ReLU. A bottleneck used to be very slow, but removing the Sigmoid improves as shown.
+
+![Drop](Executable/Model&#32;Figures/Gifs/StefanLessSigmoid.gif)
+
+
+### Increasing STD Punishment
+
+The Stefann loss function can be instantiated with a custom multiplier to how much difference in spread should be punished. This seems to be somewhat irrelevant past 1-3 and an increase of 10 did not result in much, as seen here.
+
+![Drop](Executable/Model&#32;Figures/Gifs/StefMoreStef.gif)
+
+
+### Switch to Adam
+
+To avoid the saturation of the model, as mentioned in the thesis, the optimizer is switched to Adam. However, learning rate needs to be adjusted, otherwise this step is pointless.
+
+![Drop](Executable/Model&#32;Figures/Gifs/SDGToAdam.gif)
+
+### Adjusting Learning Rate
+
+As mentioned, adjusting the learning rate can help Adam stay on track and not completely jump out of the minimum. However, the oscilatory nature is still present and doesn't let it settle.
+
+![Drop](Executable/Model&#32;Figures/Gifs/CalmerAdam.gif)
+
+
+### Final Product
+
+Finally, using a scheduler, the learning rate was slowly lowered, meaning Adam's oscilations would be slowly dampened and gently reach a minimum.
+
+![Drop](Executable/Model&#32;Figures/Gifs/StableAdam.gif)
+
+
+
+
 
 
