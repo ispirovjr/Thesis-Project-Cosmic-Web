@@ -90,7 +90,7 @@ The neural network model was designed to process and analyze subhalo data from I
 
 
 
-## Visual Demonstrations
+# Visual Demonstrations
 
 The training of this network was split into multiple steps and some architectural decisions were made due to issues realized while training the model. A scaled down version of the model was trained on Norma GPUs to demonstrate the importance of such features. The steps that will be shown here are described at length in Appendix A of my bachelor thesis.
 
@@ -106,6 +106,7 @@ Firstly, the typical patterns of learning are shown. The AI begins by randomly f
 ### Adam and Best Fit Sphere
 
 To show the scale of the issue that the best fit sphere presents and to show why Adam can not be used from the start, see how it oscilates, but remains stuck. 
+
 ![Adam](Executable/Model&#32;Figures/Gifs/Adam.gif)
 
 ### Dropout Layers
