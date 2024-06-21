@@ -88,23 +88,20 @@ The neural network model was designed to process and analyze subhalo data from I
 - **Grouped Subhalo Data**: Subhalos are grouped by superclusters in memory, aiding the network in learning patterns due to the proximity of neurons influencing each other more effectively.
 - **Bias Discovery**: Identified in collaboration with Aragon (2024), this grouping is vital for the network's performance.
 
-#### Resources
-
-- **Final Model and Scripts**: Available on GitHub, including visual aids like gifs to demonstrate network learning with varying parameters.
-
-
 
 
 ## Visual Demonstrations
 
+The training of this network was split into multiple steps and some architectural decisions were made due to issues realized while training the model. A scaled down version of the model was trained on Norma GPUs to demonstrate the importance of such features. The steps that will be shown here are described at length in Appendix A of my bachelor thesis.
+
+The information will be presented in the form of animated gifs. A single dataset was used for a given example, meaaning the leftmost (redshift-distorted) and rightmost (physically distributed) perspectives don't change. The middle pannel shows the way the model corrects this testing dataset at a given epoch in training.
+
+### Standard learning process
+
+Firstly, the typical patterns of learning are shown. The AI begins by randomly flaining and exploring the parameter space. It eventually reaches the best fit sphere (will be shown again). This is a local minimum that the AI finds, explained more in the paper. Due to the use of the Stefann loss function, it breaks out, reaching a point of saturation, characterized by smooth edges and a cessation of learning.
+
+![StefDirect](Executable/Model&#32;Figures/Gifs/LSES.gif)
 
 
 
 
-
-
-
-
-
-
-![Test Gif](Executable/Model&#32;Figures/Gifs/CalmerAdam.gif)
